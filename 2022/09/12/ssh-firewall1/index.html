@@ -21,12 +21,12 @@
   <title>通过iptables规则对SSH进行保护 - z-bool</title>
 
   
-    <meta name="description" content="通过iptables规则对SSH进行保护1. 安装iptables123yum -y install iptables apt install iptables...  2. 配置流量访问的规则2.1 伪装服务器不在线简单来说是ping不通，ping主要是icmp协议，我们就添加一条icmp包丢弃的规则。 1iptables -t raw -A PREROUTING -p icmp -j DROP">
+    <meta name="description" content="1. 安装iptables123yum -y install iptables apt install iptables...  2. 配置流量访问的规则2.1 伪装服务器不在线简单来说是ping不通，ping主要是icmp协议，我们就添加一条icmp包丢弃的规则。 1iptables -t raw -A PREROUTING -p icmp -j DROP   我们可以看到icmp的丢弃包规则已">
 <meta property="og:type" content="article">
 <meta property="og:title" content="通过iptables规则对SSH进行保护">
 <meta property="og:url" content="http://example.com/2022/09/12/ssh-firewall1/index.html">
 <meta property="og:site_name" content="z-bool">
-<meta property="og:description" content="通过iptables规则对SSH进行保护1. 安装iptables123yum -y install iptables apt install iptables...  2. 配置流量访问的规则2.1 伪装服务器不在线简单来说是ping不通，ping主要是icmp协议，我们就添加一条icmp包丢弃的规则。 1iptables -t raw -A PREROUTING -p icmp -j DROP">
+<meta property="og:description" content="1. 安装iptables123yum -y install iptables apt install iptables...  2. 配置流量访问的规则2.1 伪装服务器不在线简单来说是ping不通，ping主要是icmp协议，我们就添加一条icmp包丢弃的规则。 1iptables -t raw -A PREROUTING -p icmp -j DROP   我们可以看到icmp的丢弃包规则已">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220912132607768.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220912132843353.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220912160130605.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220912160352540.png">
 <meta property="article:published_time" content="2022-09-12T05:16:27.000Z">
-<meta property="article:modified_time" content="2022-09-12T08:04:51.330Z">
+<meta property="article:modified_time" content="2022-09-12T08:09:39.429Z">
 <meta property="article:author" content="z-bool">
 <meta property="article:tag" content="SSH">
 <meta name="twitter:card" content="summary">
@@ -100,7 +100,7 @@
 
 <article class='content md post'>
 <h1 class="article-title"><span>通过iptables规则对SSH进行保护</span></h1>
-<h1 id="通过iptables规则对SSH进行保护"><a href="#通过iptables规则对SSH进行保护" class="headerlink" title="通过iptables规则对SSH进行保护"></a>通过iptables规则对SSH进行保护</h1><h2 id="1-安装iptables"><a href="#1-安装iptables" class="headerlink" title="1. 安装iptables"></a>1. 安装iptables</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y install iptables </span><br><span class="line">apt install iptables</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="1-安装iptables"><a href="#1-安装iptables" class="headerlink" title="1. 安装iptables"></a>1. 安装iptables</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum -y install iptables </span><br><span class="line">apt install iptables</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <h2 id="2-配置流量访问的规则"><a href="#2-配置流量访问的规则" class="headerlink" title="2. 配置流量访问的规则"></a>2. 配置流量访问的规则</h2><h3 id="2-1-伪装服务器不在线"><a href="#2-1-伪装服务器不在线" class="headerlink" title="2.1 伪装服务器不在线"></a>2.1 伪装服务器不在线</h3><p>简单来说是ping不通，ping主要是icmp协议，我们就添加一条icmp包丢弃的规则。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iptables -t raw -A PREROUTING -p icmp -j DROP</span><br></pre></td></tr></table></figure>

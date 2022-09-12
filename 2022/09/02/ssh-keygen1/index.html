@@ -21,19 +21,19 @@
   <title>SSH免密码授权登录 - z-bool</title>
 
   
-    <meta name="description" content="SSH远程连接服务器免密登录1. 使用kali生成密钥ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。 1ssh-keygen # 生成的私钥保存在.ssh&#x2F;id_rsa,公钥在.ssh&#x2F;id_rsa.pub   2. 上传公钥到服务器 将本地生成的公钥文件id_rsa.pub改成authorized_keys放在~&#x2F;.ssh&#x2F;aut">
+    <meta name="description" content="1. 使用kali生成密钥ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。 1ssh-keygen # 生成的私钥保存在.ssh&#x2F;id_rsa,公钥在.ssh&#x2F;id_rsa.pub   2. 上传公钥到服务器 将本地生成的公钥文件id_rsa.pub改成authorized_keys放在~&#x2F;.ssh&#x2F;authorized_keys">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSH免密码授权登录">
 <meta property="og:url" content="http://example.com/2022/09/02/ssh-keygen1/index.html">
 <meta property="og:site_name" content="z-bool">
-<meta property="og:description" content="SSH远程连接服务器免密登录1. 使用kali生成密钥ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。 1ssh-keygen # 生成的私钥保存在.ssh&#x2F;id_rsa,公钥在.ssh&#x2F;id_rsa.pub   2. 上传公钥到服务器 将本地生成的公钥文件id_rsa.pub改成authorized_keys放在~&#x2F;.ssh&#x2F;aut">
+<meta property="og:description" content="1. 使用kali生成密钥ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。 1ssh-keygen # 生成的私钥保存在.ssh&#x2F;id_rsa,公钥在.ssh&#x2F;id_rsa.pub   2. 上传公钥到服务器 将本地生成的公钥文件id_rsa.pub改成authorized_keys放在~&#x2F;.ssh&#x2F;authorized_keys">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220902160526429.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220902193130285.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220902193329992.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220902195154793.png">
 <meta property="article:published_time" content="2022-09-02T07:12:27.000Z">
-<meta property="article:modified_time" content="2022-09-02T12:25:49.290Z">
+<meta property="article:modified_time" content="2022-09-12T08:09:50.978Z">
 <meta property="article:author" content="z-bool">
 <meta property="article:tag" content="SSH">
 <meta name="twitter:card" content="summary">
@@ -95,7 +95,7 @@
 
 <article class='content md post'>
 <h1 class="article-title"><span>SSH免密码授权登录</span></h1>
-<h1 id="SSH远程连接服务器免密登录"><a href="#SSH远程连接服务器免密登录" class="headerlink" title="SSH远程连接服务器免密登录"></a>SSH远程连接服务器免密登录</h1><h2 id="1-使用kali生成密钥"><a href="#1-使用kali生成密钥" class="headerlink" title="1. 使用kali生成密钥"></a>1. 使用kali生成密钥</h2><p>ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。</p>
+<h2 id="1-使用kali生成密钥"><a href="#1-使用kali生成密钥" class="headerlink" title="1. 使用kali生成密钥"></a>1. 使用kali生成密钥</h2><p>ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen <span class="comment"># 生成的私钥保存在.ssh/id_rsa,公钥在.ssh/id_rsa.pub</span></span><br></pre></td></tr></table></figure>
 
 <p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220902160526429.png" alt="image-20220902160526429"></p>
