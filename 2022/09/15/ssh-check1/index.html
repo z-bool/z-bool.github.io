@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>检查SSH失败登录(溯源与防范) - z-bool</title>
+
+  
+    <meta name="description" content="SSH端口暴露在公网上很容易被黑客扫描，并尝试登录系统，这种攻击基本每天都在发生。  1. 检查攻击来源btmp 为二进制文件，会记录SSH端口登录失败的信息，包括尝试的用户名、IP和时间信息，文件路径为&#x2F;var&#x2F;log&#x2F;btmp  1.1 查看文件btmp使用命令lastb可以查看文件btmp的信息，参数-n可以指定显示数量。 1lastb -n 10 | tac   1.2 查看攻击者IP及">
+<meta property="og:type" content="article">
+<meta property="og:title" content="检查SSH失败登录(溯源与防范)">
+<meta property="og:url" content="http://example.com/2022/09/15/ssh-check1/index.html">
+<meta property="og:site_name" content="z-bool">
+<meta property="og:description" content="SSH端口暴露在公网上很容易被黑客扫描，并尝试登录系统，这种攻击基本每天都在发生。  1. 检查攻击来源btmp 为二进制文件，会记录SSH端口登录失败的信息，包括尝试的用户名、IP和时间信息，文件路径为&#x2F;var&#x2F;log&#x2F;btmp  1.1 查看文件btmp使用命令lastb可以查看文件btmp的信息，参数-n可以指定显示数量。 1lastb -n 10 | tac   1.2 查看攻击者IP及">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100057431.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100150442.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100233562.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100335648.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100427662.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100514820.png">
+<meta property="article:published_time" content="2022-09-15T00:50:37.000Z">
+<meta property="article:modified_time" content="2022-09-15T02:05:26.642Z">
+<meta property="article:author" content="z-bool">
+<meta property="article:tag" content="SSH">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100057431.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="title" href="/"><div class="main">z-bool</div></a></div>
+<nav class="menu dis-select"></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%A3%80%E6%9F%A5%E6%94%BB%E5%87%BB%E6%9D%A5%E6%BA%90"><span class="toc-text">1. 检查攻击来源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6btmp"><span class="toc-text">1.1 查看文件btmp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%9F%A5%E7%9C%8B%E6%94%BB%E5%87%BB%E8%80%85IP%E5%8F%8A%E6%94%BB%E5%87%BB%E6%AC%A1%E6%95%B0"><span class="toc-text">1.2 查看攻击者IP及攻击次数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%9F%A5%E7%9C%8B%E6%94%BB%E5%87%BB%E8%80%85%E5%B0%9D%E8%AF%95%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D"><span class="toc-text">1.3 查看攻击者尝试的用户名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%88%86%E6%9E%90%E6%94%BB%E5%87%BB%E8%80%85"><span class="toc-text">2. 分析攻击者</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%9F%A5%E7%9C%8B%E6%94%BB%E5%87%BB%E5%BC%80%E5%A7%8B%E7%9A%84%E6%97%B6%E9%97%B4"><span class="toc-text">2.1 查看攻击开始的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%9F%A5%E7%9C%8B%E6%94%BB%E5%87%BB%E5%81%9C%E6%AD%A2%E7%9A%84%E6%97%B6%E9%97%B4"><span class="toc-text">2.2 查看攻击停止的时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%9F%A5%E7%9C%8BIP%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE"><span class="toc-text">2.3 查看IP地理位置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%98%B2%E8%8C%83%E6%8E%AA%E6%96%BD"><span class="toc-text">3. 防范措施</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BF%AE%E6%94%B9SSH%E7%AB%AF%E5%8F%A3"><span class="toc-text">3.1 修改SSH端口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E6%89%93%E5%BC%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">3.1.1 打开配置文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-%E4%BF%AE%E6%94%B9%E7%AB%AF%E5%8F%A3"><span class="toc-text">3.1.2 修改端口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-%E9%87%8D%E5%90%AF%E5%AE%88%E6%8A%A4%E7%A8%8B%E5%BA%8F"><span class="toc-text">3.1.3 重启守护程序</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%BF%AE%E6%94%B9%E5%A4%8D%E6%9D%82%E5%AF%86%E7%A0%81"><span class="toc-text">3.2 修改复杂密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%BF%AE%E6%94%B9%E9%98%B2%E7%81%AB%E5%A2%99%E8%A7%84%E5%88%99"><span class="toc-text">3.3 修改防火墙规则</span></a></li></ol></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-09-15T00:50:37.000Z">2022-09-15</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>检查SSH失败登录(溯源与防范)</span></h1>
+<blockquote>
+<p>SSH端口暴露在公网上很容易被黑客扫描，并尝试登录系统，这种攻击基本每天都在发生。</p>
+</blockquote>
+<h2 id="1-检查攻击来源"><a href="#1-检查攻击来源" class="headerlink" title="1. 检查攻击来源"></a>1. 检查攻击来源</h2><p><code>btmp</code> 为二进制文件，会记录<code>SSH</code>端口登录失败的信息，包括尝试的用户名、IP和时间信息，文件路径为<code>/var/log/btmp</code> </p>
+<h3 id="1-1-查看文件btmp"><a href="#1-1-查看文件btmp" class="headerlink" title="1.1 查看文件btmp"></a>1.1 查看文件btmp</h3><p>使用命令<code>lastb</code>可以查看文件<code>btmp</code>的信息，参数<code>-n</code>可以指定显示数量。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastb -n 10 | <span class="built_in">tac</span></span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100057431.png" alt="image-20220915100057431"></p>
+<h3 id="1-2-查看攻击者IP及攻击次数"><a href="#1-2-查看攻击者IP及攻击次数" class="headerlink" title="1.2 查看攻击者IP及攻击次数"></a>1.2 查看攻击者IP及攻击次数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastb | awk <span class="string">&#x27;&#123; print $3&#125;&#x27;</span>| <span class="built_in">sort</span> | <span class="built_in">uniq</span> -c | <span class="built_in">sort</span> -n</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100150442.png" alt="image-20220915100150442"></p>
+<h3 id="1-3-查看攻击者尝试的用户名"><a href="#1-3-查看攻击者尝试的用户名" class="headerlink" title="1.3 查看攻击者尝试的用户名"></a>1.3 查看攻击者尝试的用户名</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastb | awk <span class="string">&#x27;&#123; print $1&#125;&#x27;</span>| <span class="built_in">sort</span> | <span class="built_in">uniq</span> -c | <span class="built_in">sort</span> -n</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100233562.png" alt="image-20220915100233562"></p>
+<h2 id="2-分析攻击者"><a href="#2-分析攻击者" class="headerlink" title="2. 分析攻击者"></a>2. 分析攻击者</h2><blockquote>
+<p>对攻击次数第一的IP进行分析。</p>
+</blockquote>
+<h3 id="2-1-查看攻击开始的时间"><a href="#2-1-查看攻击开始的时间" class="headerlink" title="2.1 查看攻击开始的时间"></a>2.1 查看攻击开始的时间</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastb | grep 137.184.155.125</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100335648.png" alt="image-20220915100335648"></p>
+<h3 id="2-2-查看攻击停止的时间"><a href="#2-2-查看攻击停止的时间" class="headerlink" title="2.2 查看攻击停止的时间"></a>2.2 查看攻击停止的时间</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lastb | grep 137.184.155.125 | <span class="built_in">tac</span></span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100427662.png" alt="image-20220915100427662"></p>
+<h3 id="2-3-查看IP地理位置"><a href="#2-3-查看IP地理位置" class="headerlink" title="2.3 查看IP地理位置"></a>2.3 查看IP地理位置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl ipinfo.io/137.184.155.125</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20220915100514820.png" alt="image-20220915100514820"></p>
+<h2 id="3-防范措施"><a href="#3-防范措施" class="headerlink" title="3. 防范措施"></a>3. 防范措施</h2><h3 id="3-1-修改SSH端口"><a href="#3-1-修改SSH端口" class="headerlink" title="3.1 修改SSH端口"></a>3.1 修改SSH端口</h3><p>修改<code>SSH</code>端口可以避免广撒网式端口扫描及后续攻击。</p>
+<h4 id="3-1-1-打开配置文件"><a href="#3-1-1-打开配置文件" class="headerlink" title="3.1.1 打开配置文件"></a>3.1.1 打开配置文件</h4><p><code>SSH</code>配置文件是<code>sshd_config</code> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-2-修改端口"><a href="#3-1-2-修改端口" class="headerlink" title="3.1.2 修改端口"></a>3.1.2 修改端口</h4><p>修改前参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># port 22</span></span><br></pre></td></tr></table></figure>
+
+<p>修改后参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">port 4883</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-3-重启守护程序"><a href="#3-1-3-重启守护程序" class="headerlink" title="3.1.3 重启守护程序"></a>3.1.3 重启守护程序</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart sshd</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-修改复杂密码"><a href="#3-2-修改复杂密码" class="headerlink" title="3.2 修改复杂密码"></a>3.2 修改复杂密码</h3><p>设置密码为<code>字符</code>+<code>数字</code>+<code>符号</code>组合，最少8位以上就没那么容易暴力破解。</p>
+<h3 id="3-3-修改防火墙规则"><a href="#3-3-修改防火墙规则" class="headerlink" title="3.3 修改防火墙规则"></a>3.3 修改防火墙规则</h3><p>修改<code>iptables</code>或<code>firewall</code>规则设置白名单，盾住白名单外的IP访问。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables -t raw -A PREROUTING -s 自己的IP地址或者IP段 -p tcp --dport 22 -j DROP <span class="comment"># 因为默认规则是ACCEPT全部放行，所以我们用DROP或者修改默认规则，这里ACCEPT</span></span><br><span class="line">iptables -t raw -A PREROUTING -m mac --mac-source 自己的MAC地址 -p tcp --dport 22 -j DROP <span class="comment"># 以MAC地址作为规则标准，MAC地址相同概率很小，所以比较安全</span></span><br></pre></td></tr></table></figure>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/09/12/ssh-firewall1/">通过iptables规则对SSH进行保护<span class="note">较早</span></a><div class="line"></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="http://example.com/">@z-bool</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.9.0" title="v1.9.0">Stellar</a> 主题创建。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.9.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
