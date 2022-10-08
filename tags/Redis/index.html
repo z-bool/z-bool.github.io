@@ -18,12 +18,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>标签：信息收集 - z-bool</title>
+  <title>标签：Redis - z-bool</title>
 
   
     <meta property="og:type" content="website">
 <meta property="og:title" content="z-bool">
-<meta property="og:url" content="http://example.com/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/index.html">
+<meta property="og:url" content="http://example.com/tags/Redis/index.html">
 <meta property="og:site_name" content="z-bool">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="z-bool">
@@ -97,7 +97,7 @@
     
     
       
-        <a class='active' href='/tags'>标签：信息收集</a>
+        <a class='active' href='/tags'>标签：Redis</a>
       
     
     
@@ -108,15 +108,12 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/09/17/select-msg-for-person/">
-<article class="md"><h2 class="post-title">信息收集之社会人信息</h2><div class="excerpt"><p>1. 目标
-通过目标ID获取手机号和身份证，我们需要通过公开合法的手段来获取与此ID相关的信息
+  <div class="post-list post"><a class="post-card post " href="/2022/10/08/redis-unauthorized/">
+<article class="md"><h2 class="post-title">Redis未授权访问漏洞</h2><div class="excerpt"><p>1. 漏洞来源
+ 在Redis 默认没有配置密码的情况下可以使用redis-cli直接成功连接目标Redis服务器
 
-特别声明：以下所有数据均为虚构，此篇文章只用于安全分享，目的是为了提高阅读者安全意识，请勿用于不合法用途。
-2. 已知条件
-本次信息收集通过对好兄弟的信息一个实战练习，已经获取了好兄弟的授权，但为了信息隐私所有账号都会以虚拟信息提供。
 
-已知目标常用ID为jxxxxxxxx，通过各种搜索引擎进行...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-09-17T02:23:36.000Z">2022-09-17</time></span></div></article>
+2. 漏洞利用为了保证效率，redis的数据都是缓存在内存中,并周期性地把更新的数据写入磁盘或者把修改操作写入到记录件。攻击者在未授权访问redis的情况下,可以随时执行“save”命令，将当前Redis的数据保存到硬盘上。利用这个操作可以进行任意文件写入，所以通常redi...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-08T11:15:01.000Z">2022-10-08</time></span></div></article>
 </a></div>
   
 
