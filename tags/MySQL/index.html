@@ -18,12 +18,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>标签：SSH - z-bool</title>
+  <title>标签：MySQL - z-bool</title>
 
   
     <meta property="og:type" content="website">
 <meta property="og:title" content="z-bool">
-<meta property="og:url" content="http://example.com/tags/SSH/index.html">
+<meta property="og:url" content="http://example.com/tags/MySQL/index.html">
 <meta property="og:site_name" content="z-bool">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="z-bool">
@@ -97,7 +97,7 @@
     
     
       
-        <a class='active' href='/tags'>标签：SSH</a>
+        <a class='active' href='/tags'>标签：MySQL</a>
       
     
     
@@ -108,31 +108,8 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/09/15/ssh-check1/">
-<article class="md"><h2 class="post-title">检查SSH失败登录(溯源与防范)</h2><div class="excerpt"><p>
-SSH端口暴露在公网上很容易被黑客扫描，并尝试登录系统，这种攻击基本每天都在发生。
-
-1. 检查攻击来源btmp 为二进制文件，会记录SSH端口登录失败的信息，包括尝试的用户名、IP和时间信息，文件路径为/var/log/btmp 
-1.1 查看文件btmp使用命令lastb可以查看文件btmp的信息，参数-n可以指定显示数量。
-1lastb -n 10 | tac
-
-
-1.2 查看攻击者...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-09-15T00:50:37.000Z">2022-09-15</time></span></div></article>
-</a><a class="post-card post " href="/2022/09/12/ssh-firewall1/">
-<article class="md"><h2 class="post-title">通过iptables规则对SSH进行保护</h2><div class="excerpt"><p>1. 安装iptables123yum -y install iptables apt install iptables...
-
-2. 配置流量访问的规则2.1 伪装服务器不在线简单来说是ping不通，ping主要是icmp协议，我们就添加一条icmp包丢弃的规则。
-1iptables -t raw -A PREROUTING -p icmp -j DROP
-
-
-我们可以看到icmp的丢弃包...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-09-12T05:16:27.000Z">2022-09-12</time></span></div></article>
-</a><a class="post-card post " href="/2022/09/02/ssh-keygen1/">
-<article class="md"><h2 class="post-title">SSH免密码授权登录</h2><div class="excerpt"><p>1. 使用kali生成密钥ssh远程连接时会生成两个密钥一个公钥一个私钥，将本地公钥传至服务器认证后即可完成免密登录。
-1ssh-keygen # 生成的私钥保存在.ssh/id_rsa,公钥在.ssh/id_rsa.pub
-
-
-2. 上传公钥到服务器
-将本地生成的公钥文件id_rsa.pub改成authorized_keys放在~&#x2F;.ssh&#x2F;authorized_key...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-09-02T07:12:27.000Z">2022-09-02</time></span></div></article>
+  <div class="post-list post"><a class="post-card post " href="/2022/10/10/cve-2012-2122/">
+<article class="md"><h2 class="post-title">cve-2012-2122</h2><div class="excerpt"><p>1. 漏洞概述存在该漏洞的版本Mysql允许攻击者穷举256次用户密码，便能成功登录Mysql服务器。这个缺陷的根源在于memcmp（）函数总是返回-128到127（有符号字符）范围内的值。也就是说，只有在Linux系统使用SSE优化库(GNU  C库)的场合下才能被利用。如果MySQL建立在这样一个系统上，那么源代码会拿用户输入的密码哈希表与数据库中某个特殊账户中存储的哈希表进行比对，有些...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-09T17:10:32.000Z">2022-10-10</time></span></div></article>
 </a></div>
   
 
