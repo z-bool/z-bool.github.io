@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/16/java-deserializ-1/">Java反序列化1-反射与URLDNS链</a></div><div class="more-item"><a class="title" href="/2022/10/10/cve-2016-3088/">cve-2016-3088</a></div><div class="more-item"><a class="title" href="/2022/10/10/cve-2012-2122/">cve-2012-2122</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2017-12149/">cve-2017-12149</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2019-2725/">cve-2019-2725</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/20/cve-2020-1938/">CVE-2020-1938(Tomcat Ajp文件读取)</a></div><div class="more-item"><a class="title" href="/2022/09/25/cve-2017-12615/">CVE-2017-12615(Tomcat任意文件上传)</a></div><div class="more-item"><a class="title" href="/2022/10/20/cve-2017-18349/">CVE-2017-18349(FastJson 1.2.24任意命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/19/weblogic-weakpassword/">Weblogic 弱口令和任意文件上传</a></div><div class="more-item"><a class="title" href="/2022/10/19/cve-2014-4210/">CVE-2014-4210(WebLogic SSRF漏洞)</a></div></div></div>
 </div>
 
 
@@ -108,12 +108,44 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/10/09/cve-2019-2725/">
-<article class="md"><h2 class="post-title">cve-2019-2725</h2><div class="excerpt"><p>1. 漏洞概述全称：WebLogic反序列化远程代码执行漏洞
+  <div class="post-list post"><a class="post-card post " href="/2022/10/19/weblogic-weakpassword/">
+<article class="md"><h2 class="post-title">Weblogic 弱口令和任意文件上传</h2><div class="excerpt"><p>1. 漏洞描述弱口令：访问http://127.0.0.1:7001/console/login/LoginForm.jsp登录时存在弱口令登录
+任意文件上传：访问http://127.0.0.1:7001/hello/file.jsp?path=/etc/passwd可见成功读取passwd 文件
+2. 漏洞复现2.1 弱口令账号:：WebLogic
+口令：Oracle@123 
+
+2.2...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T15:58:05.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2014-4210/">
+<article class="md"><h2 class="post-title">CVE-2014-4210(WebLogic SSRF漏洞)</h2><div class="excerpt"><p>1. 漏洞原理Weblogic SSRF  漏洞出现在 UDDI  组件， UDDI  包实现包 uddiexplorer.war  下的 SearchPublicRegistries.jsp 
+实质 是利用存在缺陷的web应用作为代理攻击远程和本地的服务器，形成原因 大都是由于服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。
+2. 漏洞版本
+WebLogic 10....</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T13:27:30.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2020-14882/">
+<article class="md"><h2 class="post-title">CVE-2020-14882 + CVE-2020-14883(WebLogic权限绕过+任意代码执行)</h2><div class="excerpt"><p>1. 漏洞描述未经身份验证的远程攻击者可能通过构造特殊的 HTTP GET请求，利用该漏洞在受影响的 WebLogic Server 上执行任意代码。它们均存在于WebLogic的Console控制台组件中。
+此组件为WebLogic全版本默认自带组件，且该漏洞通过HTTP协议进行利用。将CVE-2020-14882和CVE-2020-14883 进行组合利用后，远程且未经授权的攻击者可以直...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T07:24:44.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2018-2894/">
+<article class="md"><h2 class="post-title">CVE-2018-2894(WebLogic任意文件上传)</h2><div class="excerpt"><p>1. 漏洞描述Weblogic管理端未授权的两个页面存在任意文件上传漏洞，通过这两个页面可以获取到服务器权限。这两个页面分别是/ws_utc/begin.do ，/ws_utc/config.do 。利用这两个页面可以上传任意jsp文件,从而获取到服务器权限。
+2. 影响版本
+Weblogic 10.3.6.0
+Weblogic 12.1.3.0
+Weblogic 12.2.1.2
+Webl...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T04:18:26.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2018-2628/">
+<article class="md"><h2 class="post-title">CVE-2018-2628(Weblogic RMI远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Weblogic Server 中的RMI  通信使用T3 协议在Weblogic Server 和其它Java程序，之间传输数据, 服务器实例会跟踪连接到应用程序的每个Java虚拟机中, 并创建T3协议通信连接, 将流量传输到Java虚拟机. T3 协议在开放WebLogic 控制台端口的应用上默认开启. 攻击者可以通过T3协议发送恶意的的反序列化数据, 进行反序列化, 实现...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T02:51:25.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2017-10271/">
+<article class="md"><h2 class="post-title">CVE-2017-10271(WebLogic XMLDecoder远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Weblogic的WLS Security 组件对外提供webservice 服务，其中使用了XMLDecoder 来解析用户传入的XML数据，在解析的过程中出现反序列化漏洞，导致可执行任意命令。攻击者发送精心构造的XML数据甚至能通过反弹shell拿到权限。
+2. 影响版本
+10.3.6.0.0
+12.1.3.0.0
+12.2.1.1.0
+12.2.1.2.0
+
+3. 工具利...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T00:58:09.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/09/cve-2019-2725/">
+<article class="md"><h2 class="post-title">CVE-2019-2725(WebLogic远程代码执行)</h2><div class="excerpt"><p>1. 漏洞概述全称：WebLogic反序列化远程代码执行漏洞
 描述：此漏洞存在于异步通讯服务，可通过访问路径/_async/AsyncResponseService，判断不安全组件是否开启。wls9_async_response.war包中的类由于使用注解方法调用了Weblogic原生处理Web服务的类，因此会受该漏洞影响。
 2. 利用条件
-weblogic 10.*
-weblogic 12...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-09T15:12:11.000Z">2022-10-09</time></span></div></article>
+bea_wls9_async_response.w...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-09T15:12:11.000Z">2022-10-09</time></span></div></article>
 </a></div>
   
 
