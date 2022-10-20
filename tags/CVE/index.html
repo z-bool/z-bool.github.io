@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/20/tomcat8/">Tomcat8弱口令以及后台GetShell</a></div><div class="more-item"><a class="title" href="/2022/10/20/cve-2020-1938/">CVE-2020-1938(Tomcat Ajp文件读取)</a></div><div class="more-item"><a class="title" href="/2022/09/25/cve-2017-12615/">CVE-2017-12615(Tomcat任意文件上传)</a></div><div class="more-item"><a class="title" href="/2022/10/20/cve-2017-18349/">CVE-2017-18349(FastJson 1.2.24任意命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/19/weblogic-weakpassword/">Weblogic 弱口令和任意文件上传</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/20/cve-2019-0193/">CVE-2019-0193(Solr DataImportHandler模块远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/21/cve-2021-27905/">CVE-2021-27905(Solr文件读取与SSRF)</a></div><div class="more-item"><a class="title" href="/2022/10/21/cve-2019-17558/">CVE-2019-17558(Solr Velocity 注入远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2019-2725/">CVE-2019-2725(WebLogic远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2017-12149/">CVE-2017-12149(JBOSS远程代码执行)</a></div></div></div>
 </div>
 
 
@@ -108,7 +108,29 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/10/20/cve-2020-1938/">
+  <div class="post-list post"><a class="post-card post " href="/2022/10/21/cve-2021-27905/">
+<article class="md"><h2 class="post-title">CVE-2021-27905(Solr文件读取与SSRF)</h2><div class="excerpt"><p>1. 漏洞描述用户可以通过http请求，向搜索引擎服务器提交一定格式的XML文件，生成索引；也可以通过Http Get操作提出查找请求，并得到XML格式的返回结果。攻击者可以在未授权的情况下构造恶意HTTP请求读取目标Apache Solr服务器的任意文件。
+2. 影响版本Apache Solr &lt;&#x3D; 8.8.1(全版本)
+3. 漏洞复现3.1 获取core信息获取数据库名 ...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-20T16:46:20.000Z">2022-10-21</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/21/cve-2019-17558/">
+<article class="md"><h2 class="post-title">CVE-2019-17558(Solr Velocity 注入远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Apache Solr 5.0.0版本至8.3.1版本中存在输入验证错误漏洞。攻击者可借助Velocity模板 利用该漏洞在系统上执行任意代码。
+2. 影响版本Apache Solr 5.0.0 ~8.3.1
+3. 漏洞复现
+默认情况下params.resource.loader.enabled 配置未打开，无法使用自定义模板。
+
+3.1 通过API获取核心1http://yo...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-20T16:07:49.000Z">2022-10-21</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/20/cve-2019-0193/">
+<article class="md"><h2 class="post-title">CVE-2019-0193(Solr DataImportHandler模块远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Apache Solr 的DataImportHandler 是一个可选但常用的模块，可从数据库、RSS、Web 页面和文件中导入数据。而且这个模块的配置文件不仅可以在服务端中通过配置文件指定，也可以从用户请求的dataConfig 中获取。
+2. 影响版本Apache Solr &lt; 8.2.0
+3. 漏洞复现3.1 Core Admin模块使用一个定义好的核心来实现功能...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-20T15:36:07.000Z">2022-10-20</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/20/cve-2017-12629/">
+<article class="md"><h2 class="post-title">CVE-2017-12629(Solr 远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Apache Solr  是Apache开发的一个开源的基于Lucene 的全文搜索服务器。其集合的配置方法（config路径）可以增加和修改监听器，通过RunExecutableListener 执行任意系统命令。
+2. 漏洞版本
+Apache Solr &lt; 7.1
+Apache Lucene &lt; 7.1
+
+3. 漏洞复现(RCE)3.1 判断是否存在未授权此页面...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-20T14:19:49.000Z">2022-10-20</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/20/cve-2020-1938/">
 <article class="md"><h2 class="post-title">CVE-2020-1938(Tomcat Ajp文件读取)</h2><div class="excerpt"><p>1. 漏洞描述由于Tomcat 默认开启的AJP服务（8009 端口）存在一处文件包含缺陷，攻击者可构造恶意的请求包进行文件包含操作，进而读取受影响Tomcat服务器上的Web目录文件。
 2. 影响版本
 Apache Tomcat 6
@@ -144,29 +166,6 @@ WebLogic 10....</p></div><div class="meta cap"><span class="cap" id="post-meta">
 </a><a class="post-card post " href="/2022/10/19/cve-2017-5645/">
 <article class="md"><h2 class="post-title">CVE-2017-5645(Log4j命令执行)</h2><div class="excerpt"><p>1. 漏洞描述攻击者可以通过发送一个特别制作的二进制payload，在组件将字节反序列化为对象时，触发并执行构造的payload代码。该漏洞主要是由于在处理ObjectInputStream时，接收函数对于不可靠来源的input没有过滤。可以通过给TcpSocketServer和UdpSocketServer 添加可配置的过滤功能以及一些相关设置，可以有效的解决该漏洞。
 2. 影响版本Apa...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:05:52.000Z">2022-10-19</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/19/cve-2018-2894/">
-<article class="md"><h2 class="post-title">CVE-2018-2894(WebLogic任意文件上传)</h2><div class="excerpt"><p>1. 漏洞描述Weblogic管理端未授权的两个页面存在任意文件上传漏洞，通过这两个页面可以获取到服务器权限。这两个页面分别是/ws_utc/begin.do ，/ws_utc/config.do 。利用这两个页面可以上传任意jsp文件,从而获取到服务器权限。
-2. 影响版本
-Weblogic 10.3.6.0
-Weblogic 12.1.3.0
-Weblogic 12.2.1.2
-Webl...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T04:18:26.000Z">2022-10-19</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/19/cve-2018-2628/">
-<article class="md"><h2 class="post-title">CVE-2018-2628(Weblogic RMI远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Weblogic Server 中的RMI  通信使用T3 协议在Weblogic Server 和其它Java程序，之间传输数据, 服务器实例会跟踪连接到应用程序的每个Java虚拟机中, 并创建T3协议通信连接, 将流量传输到Java虚拟机. T3 协议在开放WebLogic 控制台端口的应用上默认开启. 攻击者可以通过T3协议发送恶意的的反序列化数据, 进行反序列化, 实现...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T02:51:25.000Z">2022-10-19</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/19/cve-2017-10271/">
-<article class="md"><h2 class="post-title">CVE-2017-10271(WebLogic XMLDecoder远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Weblogic的WLS Security 组件对外提供webservice 服务，其中使用了XMLDecoder 来解析用户传入的XML数据，在解析的过程中出现反序列化漏洞，导致可执行任意命令。攻击者发送精心构造的XML数据甚至能通过反弹shell拿到权限。
-2. 影响版本
-10.3.6.0.0
-12.1.3.0.0
-12.2.1.1.0
-12.2.1.2.0
-
-3. 工具利...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T00:58:09.000Z">2022-10-19</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/18/cve-2020-1957/">
-<article class="md"><h2 class="post-title">CVE-2020-1957(Shiro权限绕过)</h2><div class="excerpt"><p>1. 漏洞描述Shiro框架通过拦截器功能来对用户访问权限进行控制，如anon, authc等拦截器。anon为匿名拦截器，不需要登录即可访问；authc为登录拦截器，需要登录才可以访问。主要是Spring web在匹配url的时候没有匹配上&#x2F;导致绕过。
-2. 影响范围Apache Shiro &lt; 1.5.3
-3. 未授权绕过思路
- 客户端请求URL：/xxx/..;/adm...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-18T14:27:10.000Z">2022-10-18</time></span></div></article>
 </a></div>
   
 
