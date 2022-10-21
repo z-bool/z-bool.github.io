@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/20/cve-2019-0193/">CVE-2019-0193(Solr DataImportHandler模块远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/21/cve-2021-27905/">CVE-2021-27905(Solr文件读取与SSRF)</a></div><div class="more-item"><a class="title" href="/2022/10/21/cve-2019-17558/">CVE-2019-17558(Solr Velocity 注入远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2019-2725/">CVE-2019-2725(WebLogic远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2017-12149/">CVE-2017-12149(JBOSS远程代码执行)</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22965/">CVE-2022-22965(Spring Data Binding与JDK 9+ 导致的远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2022-22947/">CVE-2022-22947(Spring Cloud Gateway远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2018-1270/">CVE-2018-1270(Spring Messaging 远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2017-4971/">CVE-2017-4971(Spring WebFlow 2.4.x 任意代码执行)</a></div></div></div>
 </div>
 
 
@@ -109,7 +109,7 @@
 </div>
 
   <div class="post-list post"><a class="post-card post " href="/2022/10/18/cve-2020-1957/">
-<article class="md"><h2 class="post-title">CVE-2020-1957(Shiro权限绕过)</h2><div class="excerpt"><p>1. 漏洞描述Shiro框架通过拦截器功能来对用户访问权限进行控制，如anon, authc等拦截器。anon为匿名拦截器，不需要登录即可访问；authc为登录拦截器，需要登录才可以访问。主要是Spring web在匹配url的时候没有匹配上&#x2F;导致绕过。
+<article class="md"><h2 class="post-title">CVE-2020-1957(Shiro<1.5权限绕过)</h2><div class="excerpt"><p>1. 漏洞描述Shiro框架通过拦截器功能来对用户访问权限进行控制，如anon, authc等拦截器。anon为匿名拦截器，不需要登录即可访问；authc为登录拦截器，需要登录才可以访问。主要是Spring web在匹配url的时候没有匹配上&#x2F;导致绕过。
 2. 影响范围Apache Shiro &lt; 1.5.3
 3. 未授权绕过思路
  客户端请求URL：/xxx/..;/adm...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-18T14:27:10.000Z">2022-10-18</time></span></div></article>

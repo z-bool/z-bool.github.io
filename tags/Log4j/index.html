@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/20/cve-2019-0193/">CVE-2019-0193(Solr DataImportHandler模块远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/21/cve-2021-27905/">CVE-2021-27905(Solr文件读取与SSRF)</a></div><div class="more-item"><a class="title" href="/2022/10/21/cve-2019-17558/">CVE-2019-17558(Solr Velocity 注入远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2019-2725/">CVE-2019-2725(WebLogic远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2017-12149/">CVE-2017-12149(JBOSS远程代码执行)</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22965/">CVE-2022-22965(Spring Data Binding与JDK 9+ 导致的远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2022-22947/">CVE-2022-22947(Spring Cloud Gateway远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2018-1270/">CVE-2018-1270(Spring Messaging 远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2017-4971/">CVE-2017-4971(Spring WebFlow 2.4.x 任意代码执行)</a></div></div></div>
 </div>
 
 
@@ -109,8 +109,9 @@
 </div>
 
   <div class="post-list post"><a class="post-card post " href="/2022/10/19/cve-2021-44228/">
-<article class="md"><h2 class="post-title">CVE-2021-44228(Log4j远程代码执行)</h2><div class="excerpt"><p>1. 漏洞描述由于Apache Log4j2某些功能存在递归解析功能，攻击者可直接构造恶意请求，触发远程代码执行漏洞。漏洞利用无需特殊配置，通过JNDI注入漏洞，黑客可以恶意构造特殊数据请求包，触发此漏洞，从而成功利用此漏洞可以在目标服务器上执行任意代码。
-2. 影响版本3. 漏洞复现4. 漏洞分析4.1 触发漏洞的关键代码org.apache.logging.log4j.core.patt...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:27:15.000Z">2022-10-19</time></span></div></article>
+<article class="md"><h2 class="post-title">CVE-2021-44228(Log4j2.x-2.14.1远程代码执行)</h2><div class="excerpt"><p>1. 漏洞描述由于Apache Log4j2某些功能存在递归解析功能，攻击者可直接构造恶意请求，触发远程代码执行漏洞。漏洞利用无需特殊配置，通过JNDI注入漏洞，黑客可以恶意构造特殊数据请求包，触发此漏洞，从而成功利用此漏洞可以在目标服务器上执行任意代码。
+2. 影响版本Apache Log4j 2.x - 2.14.1
+3. 漏洞复现3.1 发送DNSLog请求$&#123;jndi:dn...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:27:15.000Z">2022-10-19</time></span></div></article>
 </a><a class="post-card post " href="/2022/10/19/cve-2017-5645/">
 <article class="md"><h2 class="post-title">CVE-2017-5645(Log4j命令执行)</h2><div class="excerpt"><p>1. 漏洞描述攻击者可以通过发送一个特别制作的二进制payload，在组件将字节反序列化为对象时，触发并执行构造的payload代码。该漏洞主要是由于在处理ObjectInputStream时，接收函数对于不可靠来源的input没有过滤。可以通过给TcpSocketServer和UdpSocketServer 添加可配置的过滤功能以及一些相关设置，可以有效的解决该漏洞。
 2. 影响版本Apa...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:05:52.000Z">2022-10-19</time></span></div></article>
