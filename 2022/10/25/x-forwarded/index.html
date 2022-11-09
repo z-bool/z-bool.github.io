@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="Hexo 6.2.0">
   <meta charset="utf-8">
-  <meta name="robots" content="noindex,follow">
+  
 
   <meta http-equiv='x-dns-prefetch-control' content='on' />
   <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
@@ -18,16 +18,24 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>标签：SpringBoot - z-bool</title>
+  <title>SRC基础：X-Forwarded-*学习 - z-bool</title>
 
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="z-bool">
-<meta property="og:url" content="http://example.com/tags/SpringBoot/index.html">
+    <meta name="description" content="1. 应用场景只要使用到了反向代理，代理服务器向目标服务器重复请求时会更改Host 头，并且加入For。  X-Forwarded-For: 给出了连接到代理的客户端的地址  X-Forwarded-Port: 给客户端连接的端口（例如80或443 ）  X-Forwarded-Proto给出用于连接到代理的客户端协议（ http或https ）  X-Forwarded-Host给出客户端发送给">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SRC基础：X-Forwarded-*学习">
+<meta property="og:url" content="http://example.com/2022/10/25/x-forwarded/index.html">
 <meta property="og:site_name" content="z-bool">
+<meta property="og:description" content="1. 应用场景只要使用到了反向代理，代理服务器向目标服务器重复请求时会更改Host 头，并且加入For。  X-Forwarded-For: 给出了连接到代理的客户端的地址  X-Forwarded-Port: 给客户端连接的端口（例如80或443 ）  X-Forwarded-Proto给出用于连接到代理的客户端协议（ http或https ）  X-Forwarded-Host给出客户端发送给">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images@master/img/image-20221025221754863.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/z-bool/images@master/img/image-20221025214240279.png">
+<meta property="article:published_time" content="2022-10-25T13:22:41.000Z">
+<meta property="article:modified_time" content="2022-10-25T14:37:37.866Z">
 <meta property="article:author" content="z-bool">
+<meta property="article:tag" content="SRC">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/z-bool/images@master/img/image-20221025221754863.png">
   
   
 
@@ -54,8 +62,10 @@
   
 
 
+
+
   <div class='l_body' id='start'>
-    <aside class='l_left' layout=''>
+    <aside class='l_left' layout='post'>
     
 
 
@@ -65,56 +75,61 @@
 <nav class="menu dis-select"></nav></header>
 
 <div class="widgets">
-<div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
-</div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/17/java-deserializ-2/">Java反序列化2-CommonsCollections1(CC1链)</a></div><div class="more-item"><a class="title" href="/2022/10/23/src-tool-collection1/">SRC-HOST头攻击</a></div><div class="more-item"><a class="title" href="/2022/10/25/x-forwarded/">SRC基础：X-Forwarded-*学习</a></div><div class="more-item"><a class="title" href="/2022/10/16/java-deserializ-1/">Java反序列化1-反射与URLDNS链</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div></div></div>
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">1. 应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83"><span class="toc-text">2. 实验环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-X-Forwarded-For"><span class="toc-text">3. X-Forwarded-For</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-X-Forwarded-Host"><span class="toc-text">4. X-Forwarded-Host</span></a></li></ol></div></div></div>
+
+
 </div>
 
 
     </aside>
-    <div class='l_main list'>
+    <div class='l_main'>
       
-  
-
-<header class="header mobile-only">
-
-<div class="logo-wrap"><a class="title" href="/"><div class="main">z-bool</div></a></div>
-</header>
-
-
 
       
 
-  
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-10-25T13:22:41.000Z">2022-10-25</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>SRC基础：X-Forwarded-*学习</span></h1>
+<h2 id="1-应用场景"><a href="#1-应用场景" class="headerlink" title="1. 应用场景"></a>1. 应用场景</h2><p>只要使用到了反向代理，代理服务器向目标服务器重复请求时会更改<code>Host</code> 头，并且加入<code>For</code>。</p>
+<ul>
+<li><code>X-Forwarded-For</code>: 给出了连接到代理的客户端的地址 </li>
+<li><code>X-Forwarded-Port</code>: 给客户端连接的端口（例如<code>80</code>或<code>443</code> ） </li>
+<li><code>X-Forwarded-Proto</code>给出用于连接到代理的客户端协议（ <code>http</code>或<code>https</code> ） </li>
+<li><code>X-Forwarded-Host</code>给出客户端发送给代理的<code>Host</code>头的内容。</li>
+</ul>
+<h2 id="2-实验环境"><a href="#2-实验环境" class="headerlink" title="2. 实验环境"></a>2. 实验环境</h2><p>这里假设一些环境:</p>
+<ul>
+<li><p>外网主机(<code>8.12.1.122</code>)</p>
+</li>
+<li><p>服务器公网(<code>9.9.9.9</code>)|(<code>10.8.0.1</code> )</p>
+<ul>
+<li>代理服务器(<code>10.8.0.2</code>)</li>
+<li>四台负载均衡的服务器(<code>10.8.3-7</code> )</li>
+<li>内网DNS服务器</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-X-Forwarded-For"><a href="#3-X-Forwarded-For" class="headerlink" title="3. X-Forwarded-For"></a>3. X-Forwarded-For</h2><blockquote>
+<p>记录原IP</p>
+</blockquote>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images@master/img/image-20221025221754863.png" alt="image-20221025221754863"></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://cdn.jsdelivr.net/gh/z-bool/images@master/img/image-20221025214240279.png" alt="image-20221025214240279"></p>
+<p>客户机访问域名为<code>www.aaa.com</code>时，会先访问到代理服务器，如果在传入前带入了<code>X-Forwarded-For</code> 就会记录两个IP，一个是<u>客户机IP</u>，一个是<u>代理服务器的内网IP</u>，如果传入前没带入<code>X-Forward-For</code>，就只会有一个<u>代理服务器的内网IP</u>。</p>
+<p>**利用:**在某些只限制<code>127.0.0.1</code>的网页中通过<code>X-Forwarded-For</code>伪造访问IP。</p>
+<h2 id="4-X-Forwarded-Host"><a href="#4-X-Forwarded-Host" class="headerlink" title="4. X-Forwarded-Host"></a>4. X-Forwarded-Host</h2>
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/10/23/src-tool-collection1/">SRC-HOST头攻击<span class="note">较早</span></a><div class="line"></div></section></div>
 
 
-  <div class='nav-wrap'>
-  <nav class='sub post cap'>
-    
-      <a href='/'>近期发布</a>
-    
-    
-    
-      
-        <a class='active' href='/tags'>标签：SpringBoot</a>
-      
-    
-    
-      
-        <a href='/archives'>归档</a>
-      
-    
-  </nav>
-</div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/10/08/springboot-unauthorized/">
-<article class="md"><h2 class="post-title">SpringBoot未授权访问漏洞</h2><div class="excerpt"><p>1. 概述
-2. 信息泄露2.1 接口调用详情泄露漏洞成因：为对Swagger进行区分生产环境与开发环境，忘记切换环境配置
-直接访问(Swagger&#x2F;Swagger Codegen&#x2F;Swagger Dubbo)相关的路径查看是否有输出：
-12345678910111213141516171819202122/swagger/api.html/swagger/codes/a...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-08T13:37:55.000Z">2022-10-08</time></span></div></article>
-</a></div>
-  
 
 
 

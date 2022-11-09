@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22965/">CVE-2022-22965(Spring Data Binding与JDK 9+ 导致的远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2022-22947/">CVE-2022-22947(Spring Cloud Gateway远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2018-1270/">CVE-2018-1270(Spring Messaging 远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2017-4971/">CVE-2017-4971(Spring WebFlow 2.4.x 任意代码执行)</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/17/java-deserializ-2/">Java反序列化2-CommonsCollections1(CC1链)</a></div><div class="more-item"><a class="title" href="/2022/10/23/src-tool-collection1/">SRC-HOST头攻击</a></div><div class="more-item"><a class="title" href="/2022/10/25/x-forwarded/">SRC基础：X-Forwarded-*学习</a></div><div class="more-item"><a class="title" href="/2022/10/16/java-deserializ-1/">Java反序列化1-反射与URLDNS链</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div></div></div>
 </div>
 
 
@@ -106,7 +106,14 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/10/21/cve-2019-17558/">
+  <div class="post-list post"><a class="post-card post " href="/2022/10/21/cve-2017-7504/">
+<article class="md"><h2 class="post-title">CVE-2017-7504(Jboss4.x JBossMQ JMS远程代码执行)</h2><div class="excerpt"><p>1. 漏洞描述JbossMQ实现过程的JMS over HTTP Invocation Layer的HTTPServerILServlet.java 文件存在反序列化漏洞，远程攻击者可借助特制的序列化数据利用该漏洞执行任意代码。
+2. 影响版本JBoss Enterprise Application Platform 6.4.4,5.2.0,4.3.0_CP10JBoss AS (Wildl...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-21T10:40:01.000Z">2022-10-21</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/21/cve-2021-27905/">
+<article class="md"><h2 class="post-title">CVE-2021-27905(Solr<=8.8.1文件读取与SSRF)</h2><div class="excerpt"><p>1. 漏洞描述用户可以通过http请求，向搜索引擎服务器提交一定格式的XML文件，生成索引；也可以通过Http Get操作提出查找请求，并得到XML格式的返回结果。攻击者可以在未授权的情况下构造恶意HTTP请求读取目标Apache Solr服务器的任意文件。
+2. 影响版本Apache Solr &lt;&#x3D; 8.8.1(全版本)
+3. 漏洞复现3.1 获取core信息获取数据库名 ...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-20T16:46:20.000Z">2022-10-21</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/21/cve-2019-17558/">
 <article class="md"><h2 class="post-title">CVE-2019-17558(Solr Velocity 5.x-8.3注入远程命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Apache Solr 5.0.0版本至8.3.1版本中存在输入验证错误漏洞。攻击者可借助Velocity模板 利用该漏洞在系统上执行任意代码。
 2. 影响版本Apache Solr 5.0.0 ~8.3.1
 3. 漏洞复现
@@ -162,13 +169,6 @@ FastJson &lt;&#x3D; 1.2.47
 实质 是利用存在缺陷的web应用作为代理攻击远程和本地的服务器，形成原因 大都是由于服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。
 2. 漏洞版本
 WebLogic 10....</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T13:27:30.000Z">2022-10-19</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/19/cve-2020-14882/">
-<article class="md"><h2 class="post-title">CVE-2020-14882 + CVE-2020-14883(WebLogic权限绕过+任意代码执行)</h2><div class="excerpt"><p>1. 漏洞描述未经身份验证的远程攻击者可能通过构造特殊的 HTTP GET请求，利用该漏洞在受影响的 WebLogic Server 上执行任意代码。它们均存在于WebLogic的Console控制台组件中。
-此组件为WebLogic全版本默认自带组件，且该漏洞通过HTTP协议进行利用。将CVE-2020-14882和CVE-2020-14883 进行组合利用后，远程且未经授权的攻击者可以直...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T07:24:44.000Z">2022-10-19</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/19/cve-2021-44228/">
-<article class="md"><h2 class="post-title">CVE-2021-44228(Log4j2.x-2.14.1远程代码执行)</h2><div class="excerpt"><p>1. 漏洞描述由于Apache Log4j2某些功能存在递归解析功能，攻击者可直接构造恶意请求，触发远程代码执行漏洞。漏洞利用无需特殊配置，通过JNDI注入漏洞，黑客可以恶意构造特殊数据请求包，触发此漏洞，从而成功利用此漏洞可以在目标服务器上执行任意代码。
-2. 影响版本Apache Log4j 2.x - 2.14.1
-3. 漏洞复现3.1 发送DNSLog请求$&#123;jndi:dn...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:27:15.000Z">2022-10-19</time></span></div></article>
 </a></div>
   
   <div class='paginator-wrap dis-select'>

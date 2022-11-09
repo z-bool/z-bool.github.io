@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22965/">CVE-2022-22965(Spring Data Binding与JDK 9+ 导致的远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2022-22947/">CVE-2022-22947(Spring Cloud Gateway远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2018-1270/">CVE-2018-1270(Spring Messaging 远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2017-4971/">CVE-2017-4971(Spring WebFlow 2.4.x 任意代码执行)</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/17/java-deserializ-2/">Java反序列化2-CommonsCollections1(CC1链)</a></div><div class="more-item"><a class="title" href="/2022/10/23/src-tool-collection1/">SRC-HOST头攻击</a></div><div class="more-item"><a class="title" href="/2022/10/25/x-forwarded/">SRC基础：X-Forwarded-*学习</a></div><div class="more-item"><a class="title" href="/2022/10/16/java-deserializ-1/">Java反序列化1-反射与URLDNS链</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div></div></div>
 </div>
 
 
@@ -128,13 +128,8 @@
 <article class="md"><h2 class="post-title">CVE-2016-4437(Shiro反序列化命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Shiro提供了记住我(RememberMe)的功能，对cookie中的Remember me字段进行相关处理：序列化–&gt;AES加密–&gt;base64编码
 由于Shiro本身含有一个预设的AES密钥。Base64.decode(&quot;KPHblxk5D2deZilxcaaaA==&quot;)， 而shiro&lt;1.2.4版本的AES的密钥是硬编码的，就导致...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-18T13:21:37.000Z">2022-10-18</time></span></div></article>
 </a><a class="post-card post " href="/2022/10/17/java-deserializ-2/">
-<article class="md"><h2 class="post-title">Java反序列化2-CommonsCollections1(CC1链)</h2><div class="excerpt"><p>1. Commons-Collections简介commons-collections是Apache软件基金会的项目，对Java标准的Collections API提供了很好的补充，在其基础上对常用的数据结构进行了封装、抽象和补充，目的在于提供可重用的、用来解决常见需求的代码及数据结构。
-反序列化目的:接收任意对象执行任意方法，参数可控
-2. CC1利用链
-有两条利用链
-
-
-Annotati...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-17T06:29:38.000Z">2022-10-17</time></span></div></article>
+<article class="md"><h2 class="post-title">Java反序列化2-CommonsCollections1(CC1链)</h2><div class="excerpt"><p>1. Commons-Collections简介https://github.com/Maskhe/javasec/blob/master/3.%20apache%20commons-collections%E4%B8%AD%E7%9A%84%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96.md
+commons-collections是Apache软件基金会的项目，对...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-17T06:29:38.000Z">2022-10-17</time></span></div></article>
 </a><a class="post-card post " href="/2022/10/09/cve-2017-12149/">
 <article class="md"><h2 class="post-title">CVE-2017-12149(Jboss5.x/6.x远程代码执行)</h2><div class="excerpt"><p>1. 漏洞描述
 JBOSS反序列化漏洞

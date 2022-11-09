@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22965/">CVE-2022-22965(Spring Data Binding与JDK 9+ 导致的远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2022-22947/">CVE-2022-22947(Spring Cloud Gateway远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2018-1270/">CVE-2018-1270(Spring Messaging 远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2017-4971/">CVE-2017-4971(Spring WebFlow 2.4.x 任意代码执行)</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/17/java-deserializ-2/">Java反序列化2-CommonsCollections1(CC1链)</a></div><div class="more-item"><a class="title" href="/2022/10/23/src-tool-collection1/">SRC-HOST头攻击</a></div><div class="more-item"><a class="title" href="/2022/10/25/x-forwarded/">SRC基础：X-Forwarded-*学习</a></div><div class="more-item"><a class="title" href="/2022/10/16/java-deserializ-1/">Java反序列化1-反射与URLDNS链</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div></div></div>
 </div>
 
 
@@ -106,7 +106,14 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/10/19/cve-2017-5645/">
+  <div class="post-list post"><a class="post-card post " href="/2022/10/19/cve-2020-14882/">
+<article class="md"><h2 class="post-title">CVE-2020-14882 + CVE-2020-14883(WebLogic权限绕过+任意代码执行)</h2><div class="excerpt"><p>1. 漏洞描述未经身份验证的远程攻击者可能通过构造特殊的 HTTP GET请求，利用该漏洞在受影响的 WebLogic Server 上执行任意代码。它们均存在于WebLogic的Console控制台组件中。
+此组件为WebLogic全版本默认自带组件，且该漏洞通过HTTP协议进行利用。将CVE-2020-14882和CVE-2020-14883 进行组合利用后，远程且未经授权的攻击者可以直...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T07:24:44.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2021-44228/">
+<article class="md"><h2 class="post-title">CVE-2021-44228(Log4j2.x-2.14.1远程代码执行)</h2><div class="excerpt"><p>1. 漏洞描述由于Apache Log4j2某些功能存在递归解析功能，攻击者可直接构造恶意请求，触发远程代码执行漏洞。漏洞利用无需特殊配置，通过JNDI注入漏洞，黑客可以恶意构造特殊数据请求包，触发此漏洞，从而成功利用此漏洞可以在目标服务器上执行任意代码。
+2. 影响版本Apache Log4j 2.x - 2.14.1
+3. 漏洞复现3.1 发送DNSLog请求$&#123;jndi:dn...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:27:15.000Z">2022-10-19</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/19/cve-2017-5645/">
 <article class="md"><h2 class="post-title">CVE-2017-5645(Log4j命令执行)</h2><div class="excerpt"><p>1. 漏洞描述攻击者可以通过发送一个特别制作的二进制payload，在组件将字节反序列化为对象时，触发并执行构造的payload代码。该漏洞主要是由于在处理ObjectInputStream时，接收函数对于不可靠来源的input没有过滤。可以通过给TcpSocketServer和UdpSocketServer 添加可配置的过滤功能以及一些相关设置，可以有效的解决该漏洞。
 2. 影响版本Apa...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-19T06:05:52.000Z">2022-10-19</time></span></div></article>
 </a><a class="post-card post " href="/2022/10/19/cve-2018-2894/">
@@ -136,23 +143,13 @@ Webl...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布�
 <article class="md"><h2 class="post-title">CVE-2016-4437(Shiro反序列化命令执行)</h2><div class="excerpt"><p>1. 漏洞描述Shiro提供了记住我(RememberMe)的功能，对cookie中的Remember me字段进行相关处理：序列化–&gt;AES加密–&gt;base64编码
 由于Shiro本身含有一个预设的AES密钥。Base64.decode(&quot;KPHblxk5D2deZilxcaaaA==&quot;)， 而shiro&lt;1.2.4版本的AES的密钥是硬编码的，就导致...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-18T13:21:37.000Z">2022-10-18</time></span></div></article>
 </a><a class="post-card post " href="/2022/10/17/java-deserializ-2/">
-<article class="md"><h2 class="post-title">Java反序列化2-CommonsCollections1(CC1链)</h2><div class="excerpt"><p>1. Commons-Collections简介commons-collections是Apache软件基金会的项目，对Java标准的Collections API提供了很好的补充，在其基础上对常用的数据结构进行了封装、抽象和补充，目的在于提供可重用的、用来解决常见需求的代码及数据结构。
-反序列化目的:接收任意对象执行任意方法，参数可控
-2. CC1利用链
-有两条利用链
-
-
-Annotati...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-17T06:29:38.000Z">2022-10-17</time></span></div></article>
+<article class="md"><h2 class="post-title">Java反序列化2-CommonsCollections1(CC1链)</h2><div class="excerpt"><p>1. Commons-Collections简介https://github.com/Maskhe/javasec/blob/master/3.%20apache%20commons-collections%E4%B8%AD%E7%9A%84%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96.md
+commons-collections是Apache软件基金会的项目，对...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-17T06:29:38.000Z">2022-10-17</time></span></div></article>
 </a><a class="post-card post " href="/2022/10/16/java-deserializ-1/">
 <article class="md"><h2 class="post-title">Java反序列化1-反射与URLDNS链</h2><div class="excerpt"><p>1. 反射
 通过Demo来学习反射
 
 1.1 创建Person类123456789101112131415161718192021222324252627282930313233343536373839404142public class Person implements Serializable &#123; // implements 实现 Serializable序列化接口 说明支持...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-16T07:22:43.000Z">2022-10-16</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/10/cve-2012-2122/">
-<article class="md"><h2 class="post-title">CVE-2012-2122(MySql身份认证绕过)</h2><div class="excerpt"><p>1. 漏洞概述存在该漏洞的版本Mysql允许攻击者穷举256次用户密码，便能成功登录Mysql服务器。这个缺陷的根源在于memcmp（）函数总是返回-128到127（有符号字符）范围内的值。也就是说，只有在Linux系统使用SSE优化库(GNU  C库)的场合下才能被利用。如果MySQL建立在这样一个系统上，那么源代码会拿用户输入的密码哈希表与数据库中某个特殊账户中存储的哈希表进行比对，有些...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-09T17:10:32.000Z">2022-10-10</time></span></div></article>
-</a><a class="post-card post " href="/2022/10/10/cve-2016-3088/">
-<article class="md"><h2 class="post-title">CVE-2016-3088(ActiveMQ任意文件写入)</h2><div class="excerpt"><p>1. 漏洞描述全称：ActiveMQ任意文件写入漏洞
-描述：ActiveMQ的web控制台分三个应用，admin、api和fileserver，其中admin是管理员页面，api是接口，fileserver是储存文件的接口；admin和api都需要登录后才能使用，fileserver无需登录(fileserver是一个RESTful API接口，我们可以通过、PUT、DELETE等HTTP请...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-09T16:35:57.000Z">2022-10-10</time></span></div></article>
 </a></div>
   
   <div class='paginator-wrap dis-select'>

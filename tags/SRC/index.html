@@ -18,12 +18,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>标签：反序列化 - z-bool</title>
+  <title>标签：SRC - z-bool</title>
 
   
     <meta property="og:type" content="website">
 <meta property="og:title" content="z-bool">
-<meta property="og:url" content="http://example.com/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:url" content="http://example.com/tags/SRC/index.html">
 <meta property="og:site_name" content="z-bool">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="z-bool">
@@ -68,7 +68,7 @@
 <div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">Stellar 入门指南</span></div><div class="widget-body fs14"><p>欢迎使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/">Stellar</a> 主题，下面是您的入门指南，祝您使用愉快！<br><br><br><strong>第一步</strong><br>创建 <code>blog/_config.stellar.yml</code> 文件，在此文件中填写需要自定义的主题配置。<br><br><br><strong>第二步</strong><br>创建 <code>blog/source/_data/widgets.yml</code> 文件，此文件中填写需要自定义的侧边栏组件，例如 <code>welcome</code> 组件。<br><br><br>如果有任何疑问，请先查阅<a target="_blank" rel="noopener" href="https://xaoxuu.com/wiki/stellar/">文档</a>，如果文档中没有提供，请提 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/issues/">issue</a> 向开发中询问。</p>
 </div></div>
 
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22965/">CVE-2022-22965(Spring Data Binding与JDK 9+ 导致的远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/09/cve-2022-22947/">CVE-2022-22947(Spring Cloud Gateway远程代码执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2018-1270/">CVE-2018-1270(Spring Messaging 远程命令执行)</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2017-4971/">CVE-2017-4971(Spring WebFlow 2.4.x 任意代码执行)</a></div></div></div>
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/10/17/java-deserializ-2/">Java反序列化2-CommonsCollections1(CC1链)</a></div><div class="more-item"><a class="title" href="/2022/10/23/src-tool-collection1/">SRC-HOST头攻击</a></div><div class="more-item"><a class="title" href="/2022/10/25/x-forwarded/">SRC基础：X-Forwarded-*学习</a></div><div class="more-item"><a class="title" href="/2022/10/16/java-deserializ-1/">Java反序列化1-反射与URLDNS链</a></div><div class="more-item"><a class="title" href="/2022/10/22/cve-2022-22978/">CVE-2022-22978(Spring Security 认证绕过漏洞)</a></div></div></div>
 </div>
 
 
@@ -97,7 +97,7 @@
     
     
       
-        <a class='active' href='/tags'>标签：反序列化</a>
+        <a class='active' href='/tags'>标签：SRC</a>
       
     
     
@@ -108,14 +108,18 @@
   </nav>
 </div>
 
-  <div class="post-list post"><a class="post-card post " href="/2022/10/17/java-deserializ-2/">
-<article class="md"><h2 class="post-title">Java反序列化2-CommonsCollections1(CC1链)</h2><div class="excerpt"><p>1. Commons-Collections简介commons-collections是Apache软件基金会的项目，对Java标准的Collections API提供了很好的补充，在其基础上对常用的数据结构进行了封装、抽象和补充，目的在于提供可重用的、用来解决常见需求的代码及数据结构。
-反序列化目的:接收任意对象执行任意方法，参数可控
-2. CC1利用链
-有两条利用链
+  <div class="post-list post"><a class="post-card post " href="/2022/10/25/x-forwarded/">
+<article class="md"><h2 class="post-title">SRC基础：X-Forwarded-*学习</h2><div class="excerpt"><p>1. 应用场景只要使用到了反向代理，代理服务器向目标服务器重复请求时会更改Host 头，并且加入For。
 
-
-Annotati...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-17T06:29:38.000Z">2022-10-17</time></span></div></article>
+X-Forwarded-For: 给出了连接到代理的客户端的地址 
+X-Forwarded-Port: 给客户端连接的端口（例如80或443 ） 
+X-Forwarded-Proto给出用于连接到代理的客户端协议（ http或https ） 
+X-Forwarded-Host给出客户端...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-25T13:22:41.000Z">2022-10-25</time></span></div></article>
+</a><a class="post-card post " href="/2022/10/23/src-tool-collection1/">
+<article class="md"><h2 class="post-title">SRC-HOST头攻击</h2><div class="excerpt"><p>1. Host头攻击1.1 Host头作用
+是确定客户端要与哪个后端组件通信。如果请求不包含主机头，或者如果主机头在某种程度上格式错误，则在请求路由到目标应用程序时会导致问题。
+单个Web服务器托管多个网站或应用程序。尽管这些不同的网站都有不同的域名，但它们都与服务器共享一个共同的IP地址。
+网站托管在不同的后端服务器上，但客户端和服务器之间的所有流量都通过中间系统进行路由。它们的所有域名也...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-10-23T08:54:45.000Z">2022-10-23</time></span></div></article>
 </a></div>
   
 
